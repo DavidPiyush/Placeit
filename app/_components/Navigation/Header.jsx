@@ -1,20 +1,25 @@
+"use client";
 import {
   List,
-  ListItem,
   Link,
   Button,
   HStack,
   Flex,
   Box,
+  InputGroup,
+  Input,
 } from "@chakra-ui/react";
 import Logo from "../Logo";
+import { BiSearch } from "react-icons/bi";
+import { ColorModeButton } from "@/components/ui/color-mode";
 
 function Header() {
   return (
     <Flex
       as="header"
-      justify="space-between"
+      gap={24}
       align="center"
+      justify="center"
       p={4}
       color="white"
     >
@@ -22,6 +27,11 @@ function Header() {
         <Logo />
       </Box>
 
+      <Box width="450px">
+        <InputGroup startElement={<BiSearch />}>
+          <Input placeholder="Search mockups..." ps="7ch" />
+        </InputGroup>
+      </Box>
       <Flex as="nav" gap={6} align="center">
         <List.Root
           display="flex"
@@ -50,6 +60,7 @@ function Header() {
           <Button colorScheme="teal" size="sm" px={6}>
             Sign Up
           </Button>
+          <ColorModeButton />
         </HStack>
       </Flex>
     </Flex>
