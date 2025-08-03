@@ -1,13 +1,15 @@
-import { Container } from "@chakra-ui/react"
-import Header from "../_components/Navigation/Header"
-
+import { Box } from "@chakra-ui/react";
+import Header from "../_components/Navigation/Header";
+import Footer from "../_components/Footers/Footer";
 
 function Home() {
-    return (
-      <Container>
-        <Header />
-      </Container>
-    )
+  return (
+    <Box>
+      <Header />
+
+      <Footer />
+    </Box>
+  );
 }
 
-export default Home
+export default Home;
