@@ -7,7 +7,7 @@ import {
 
 export default function HeroSection() {
   return (
-    <section className="pt-20 pb-20 px-6 sm:px-8 lg:px-10 max-w-7xl mx-auto">
+    <section className="pt-2 pb-20 px-6 sm:px-8 lg:px-10 max-w-7xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         {/* Left content */}
         <div className="text-center lg:text-left">
@@ -17,7 +17,7 @@ export default function HeroSection() {
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
             <span className="block">Design Stunning</span>
-            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-600 via-pink-400 to-orange-400 bg-clip-text text-transparent">
               Product Mockups
             </span>
           </h1>

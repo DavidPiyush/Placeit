@@ -1,4 +1,3 @@
-
 import Footer from "../_components/Footers/Footer";
 import Header from "../_components/Navigation/Header";
 import AiFeaturesSection from "./AiFeaturesSection";
@@ -16,21 +15,20 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       {/* Header */}
       <Header />
-    
 
       {/* Main Content Placeholder */}
       <main className="flex-grow">
         {/* Replace this with your actual page content */}
         <section className="py-16 text-center">
-        <HeroSection/>
-        <TrustedBy/>
-        <Features/>
-        <HowMockupProWorks/>
-        <MockupCategories/>
-        <AiFeaturesSection/>
-        <Testimonials/>
-        <PricingSection/>
-        <PricingFAQSection/>
+          <HeroSection />
+          <TrustedBy />
+          <HowMockupProWorks />
+          <MockupCategories />
+          {/* <Features /> */}
+          <AiFeaturesSection />
+          <PricingSection />
+          <Testimonials />
+          <PricingFAQSection />
         </section>
       </main>
 
