@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import {
+  FaUser,
   FaEnvelope,
   FaLock,
   FaArrowRight,
@@ -8,29 +9,36 @@ import {
   FaApple,
   FaGithub,
   FaCheck,
+  FaCrown,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function PremiumLoginPage() {
+export default function PremiumSignupPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [loginState, setLoginState] = useState("idle"); // idle | loading | success | error
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [plan, setPlan] = useState("free"); // free | pro
+  const [signupState, setSignupState] = useState("idle"); // idle | loading | success | error
   const formRef = useRef(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoginState("loading");
+    setSignupState("loading");
 
-    // Simulate login process
+    // Simulate signup process
     setTimeout(() => {
-      if (email.includes("@") && password.length >= 6) {
-        setLoginState("success");
+      if (
+        email.includes("@") &&
+        password.length >= 6 &&
+        password === confirmPassword
+      ) {
+        setSignupState("success");
         setTimeout(() => {
           // Redirect or handle success
         }, 1500);
       } else {
-        setLoginState("error");
+        setSignupState("error");
       }
     }, 2000);
   };
@@ -106,7 +114,7 @@ export default function PremiumLoginPage() {
           className="mt-16 relative z-10"
         >
           <h2 className="text-4xl font-bold text-white mb-6">
-            Elevate Your Product Visuals
+            Create Stunning Product Visuals
           </h2>
           <p className="text-xl text-blue-100 max-w-md">
             Join 50,000+ designers creating professional mockups in minutes
@@ -118,6 +126,8 @@ export default function PremiumLoginPage() {
               "Commercial license included",
               "Cancel anytime",
               "4.9/5 stars on TrustPilot",
+              "1000+ premium templates",
+              "AI-powered scene generation",
             ].map((text, idx) => (
               <motion.div
                 key={idx}
@@ -165,7 +175,7 @@ export default function PremiumLoginPage() {
         </div>
       </motion.div>
 
-      {/* Right Side - Login Form */}
+      {/* Right Side - Signup Form */}
       <div className="w-full md:w-1/2 p-8 md:p-12 flex items-center justify-center">
         <motion.div
           ref={formRef}
@@ -181,7 +191,7 @@ export default function PremiumLoginPage() {
               transition={{ delay: 0.4 }}
               className="text-3xl font-bold text-gray-800 mb-2"
             >
-              Welcome back
+              Create your account
             </motion.h1>
             <motion.p
               initial={{ y: -10, opacity: 0 }}
@@ -189,7 +199,7 @@ export default function PremiumLoginPage() {
               transition={{ delay: 0.5 }}
               className="text-gray-600"
             >
-              Sign in to continue to MockupPro
+              Start creating professional mockups in minutes
             </motion.p>
           </div>
 
@@ -200,6 +210,20 @@ export default function PremiumLoginPage() {
               transition={{ delay: 0.6 }}
               className="space-y-4"
             >
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaUser className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Full name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  required
+                />
+              </div>
+
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <FaEnvelope className="h-5 w-5 text-gray-400" />
@@ -220,42 +244,128 @@ export default function PremiumLoginPage() {
                 </div>
                 <input
                   type="password"
-                  placeholder="Password"
+                  placeholder="Password (min 6 characters)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                   required
+                  minLength="6"
+                />
+              </div>
+
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaLock className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="password"
+                  placeholder="Confirm password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  required
+                  minLength="6"
                 />
               </div>
             </motion.div>
 
+            {/* Plan Selection */}
             <motion.div
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.7 }}
-              className="flex items-center justify-between"
+              className="space-y-4"
             >
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="remember-me"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded cursor-pointer"
-                />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-700 cursor-pointer"
+              <h3 className="text-lg font-medium text-gray-800">
+                Choose your plan
+              </h3>
+
+              <div className="grid grid-cols-2 gap-4">
+                <motion.div
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setPlan("free")}
+                  className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                    plan === "free"
+                      ? "border-purple-500 bg-purple-50"
+                      : "border-gray-200 hover:border-purple-300"
+                  }`}
                 >
-                  Remember me
-                </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium">Free</h4>
+                    <div className="text-sm bg-gray-100 px-2 py-1 rounded">
+                      Current
+                    </div>
+                  </div>
+                  <p className="text-2xl font-bold mb-2">
+                    $0
+                    <span className="text-sm font-normal text-gray-500">
+                      /month
+                    </span>
+                  </p>
+                  <ul className="text-sm space-y-1 text-gray-600">
+                    <li className="flex items-center">
+                      <FaCheck className="w-3 h-3 mr-2 text-green-500" />5
+                      mockups/month
+                    </li>
+                    <li className="flex items-center">
+                      <FaCheck className="w-3 h-3 mr-2 text-green-500" />
+                      Basic templates
+                    </li>
+                    <li className="flex items-center">
+                      <FaCheck className="w-3 h-3 mr-2 text-green-500" />
+                      Watermarked downloads
+                    </li>
+                  </ul>
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setPlan("pro")}
+                  className={`p-4 border rounded-lg cursor-pointer transition-all relative ${
+                    plan === "pro"
+                      ? "border-purple-500 bg-purple-50"
+                      : "border-gray-200 hover:border-purple-300"
+                  }`}
+                >
+                  <div className="absolute top-0 right-0 bg-yellow-400 text-xs font-bold px-2 py-1 rounded-bl rounded-tr">
+                    POPULAR
+                  </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium">Pro</h4>
+                    <FaCrown className="text-yellow-500" />
+                  </div>
+                  <p className="text-2xl font-bold mb-2">
+                    $19
+                    <span className="text-sm font-normal text-gray-500">
+                      /month
+                    </span>
+                  </p>
+                  <ul className="text-sm space-y-1 text-gray-600">
+                    <li className="flex items-center">
+                      <FaCheck className="w-3 h-3 mr-2 text-green-500" />
+                      Unlimited mockups
+                    </li>
+                    <li className="flex items-center">
+                      <FaCheck className="w-3 h-3 mr-2 text-green-500" />
+                      Premium templates
+                    </li>
+                    <li className="flex items-center">
+                      <FaCheck className="w-3 h-3 mr-2 text-green-500" />
+                      No watermark + Commercial use
+                    </li>
+                    <li className="flex items-center">
+                      <FaCheck className="w-3 h-3 mr-2 text-green-500" />
+                      Batch processing
+                    </li>
+                    <li className="flex items-center">
+                      <FaCheck className="w-3 h-3 mr-2 text-green-500" />
+                      AI tools
+                    </li>
+                  </ul>
+                </motion.div>
               </div>
-              <a
-                href="#"
-                className="text-sm font-medium text-purple-600 hover:text-purple-500 transition-colors"
-              >
-                Forgot password?
-              </a>
             </motion.div>
 
             <motion.div
@@ -265,16 +375,16 @@ export default function PremiumLoginPage() {
             >
               <motion.button
                 type="submit"
-                disabled={loginState === "loading"}
+                disabled={signupState === "loading"}
                 variants={buttonVariants}
                 initial="idle"
-                animate={loginState === "idle" ? "idle" : loginState}
-                whileHover={loginState === "idle" ? "hover" : {}}
-                whileTap={loginState === "idle" ? "tap" : {}}
+                animate={signupState === "idle" ? "idle" : signupState}
+                whileHover={signupState === "idle" ? "hover" : {}}
+                whileTap={signupState === "idle" ? "tap" : {}}
                 className="w-full flex items-center justify-center px-6 py-3 text-white font-medium rounded-lg shadow-lg transition-all overflow-hidden relative"
               >
                 <AnimatePresence mode="wait">
-                  {loginState === "idle" && (
+                  {signupState === "idle" && (
                     <motion.span
                       key="idle"
                       initial={{ opacity: 0 }}
@@ -282,10 +392,13 @@ export default function PremiumLoginPage() {
                       exit={{ opacity: 0 }}
                       className="flex items-center"
                     >
-                      Continue <FaArrowRight className="ml-2" />
+                      {plan === "pro"
+                        ? "Start 7-day free trial"
+                        : "Create free account"}{" "}
+                      <FaArrowRight className="ml-2" />
                     </motion.span>
                   )}
-                  {loginState === "loading" && (
+                  {signupState === "loading" && (
                     <motion.span
                       key="loading"
                       initial={{ opacity: 0 }}
@@ -313,10 +426,10 @@ export default function PremiumLoginPage() {
                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                         ></path>
                       </svg>
-                      Authenticating...
+                      Creating account...
                     </motion.span>
                   )}
-                  {loginState === "success" && (
+                  {signupState === "success" && (
                     <motion.span
                       key="success"
                       initial={{ opacity: 0 }}
@@ -324,10 +437,10 @@ export default function PremiumLoginPage() {
                       exit={{ opacity: 0 }}
                       className="flex items-center"
                     >
-                      <FaCheck className="mr-2" /> Login Successful!
+                      <FaCheck className="mr-2" /> Account Created!
                     </motion.span>
                   )}
-                  {loginState === "error" && (
+                  {signupState === "error" && (
                     <motion.span
                       key="error"
                       initial={{ opacity: 0 }}
@@ -335,21 +448,26 @@ export default function PremiumLoginPage() {
                       exit={{ opacity: 0 }}
                       className="flex items-center"
                     >
-                      Invalid Credentials - Try Again
+                      Error Creating Account - Try Again
                     </motion.span>
                   )}
                 </AnimatePresence>
               </motion.button>
 
-              {loginState === "error" && (
+              {signupState === "error" && (
                 <motion.p
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   className="mt-2 text-sm text-red-600 text-center"
                 >
-                  Please check your email and password
+                  Please check your information and try again
                 </motion.p>
               )}
+
+              <p className="mt-3 text-xs text-gray-500 text-center">
+                By signing up, you agree to our Terms of Service and Privacy
+                Policy
+              </p>
             </motion.div>
           </form>
 
@@ -365,7 +483,7 @@ export default function PremiumLoginPage() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white text-gray-500">
-                  Or sign in with
+                  Or sign up with
                 </span>
               </div>
             </div>
@@ -404,12 +522,12 @@ export default function PremiumLoginPage() {
             transition={{ delay: 1 }}
             className="mt-8 text-center text-sm text-gray-600"
           >
-            Don&apos;t have an account?{" "}
+            Already have an account?{" "}
             <a
-              href="#"
+              href="/login"
               className="font-medium text-purple-600 hover:text-purple-500 transition-colors"
             >
-              Start your free trial
+              Sign in
             </a>
           </motion.div>
         </motion.div>
