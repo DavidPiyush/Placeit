@@ -1,362 +1,533 @@
-'use client';
-import { useState } from "react";
+"use client";
+import { useState, useRef } from "react";
+import {
+  FaUpload,
+  FaExchangeAlt,
+  FaMobileAlt,
+  FaLaptop,
+  FaTshirt,
+  FaMugHot,
+  FaMagic,
+  FaSpinner,
+  FaDownload,
+  FaUndo,
+  FaPalette,
+  FaCheck,
+  FaTimes,
+  FaBoxOpen,
+} from "react-icons/fa";
 
-export default function HowMockupProWorks() {
+export default function MockupGenerator() {
+  // State management
   const [uploadedImage, setUploadedImage] = useState(null);
   const [activeMockup, setActiveMockup] = useState("iphone");
+  const [isDragging, setIsDragging] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [downloadsLeft, setDownloadsLeft] = useState(5);
+  const [designSize, setDesignSize] = useState(100);
+  const [rotation, setRotation] = useState(0);
+  const [opacity, setOpacity] = useState(100);
+  const [background, setBackground] = useState("white");
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [customBgColor, setCustomBgColor] = useState("#ffffff");
 
-  // Handle file selection
+  const fileInputRef = useRef(null);
+
+  // Mockup types
+  const mockupTypes = [
+    { key: "iphone", icon: <FaMobileAlt />, label: "Phone" },
+    { key: "macbook", icon: <FaLaptop />, label: "Laptop" },
+    { key: "tshirt", icon: <FaTshirt />, label: "Apparel" },
+    { key: "mug", icon: <FaMugHot />, label: "Mug" },
+    { key: "packaging", icon: <FaBoxOpen />, label: "Box" },
+  ];
+
+  // Background options
+  const bgOptions = [
+    { value: "white", label: "White", color: "bg-white" },
+    { value: "gray", label: "Gray", color: "bg-gray-200" },
+    {
+      value: "gradient",
+      label: "Gradient",
+      color: "bg-gradient-to-r from-blue-50 to-purple-50",
+    },
+    { value: "custom", label: "Custom", icon: <FaPalette /> },
+  ];
+
+  // Handle file operations
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    if (file.size > 20 * 1024 * 1024) {
+      alert("File size exceeds 20MB limit");
+      return;
+    }
 
     const reader = new FileReader();
     reader.onload = () => setUploadedImage(reader.result);
     reader.readAsDataURL(file);
   };
 
-  // Reset upload
-  const resetUpload = () => setUploadedImage(null);
+  // Drag and drop handlers
+  const handleDrag = {
+    enter: (e) => {
+      e.preventDefault();
+      setIsDragging(true);
+    },
+    leave: (e) => {
+      e.preventDefault();
+      setIsDragging(false);
+    },
+    over: (e) => e.preventDefault(),
+    drop: (e) => {
+      e.preventDefault();
+      setIsDragging(false);
+      if (e.dataTransfer.files.length) {
+        fileInputRef.current.files = e.dataTransfer.files;
+        handleFileChange({ target: fileInputRef.current });
+      }
+    },
+  };
+
+  // Reset design
+  const resetDesign = () => {
+    setDesignSize(100);
+    setRotation(0);
+    setOpacity(100);
+    setBackground("white");
+  };
+
+  // AI Enhance simulation
+  const aiEnhance = () => {
+    if (!uploadedImage) return;
+    setIsProcessing(true);
+    setTimeout(() => {
+      setDesignSize(90 + Math.floor(Math.random() * 20));
+      setRotation(-5 + Math.floor(Math.random() * 10));
+      setOpacity(95);
+      setIsProcessing(false);
+    }, 1500);
+  };
+
+  // Download mockup
+  const downloadMockup = () => {
+    if (!uploadedImage) {
+      alert("Please upload a design first");
+      return;
+    }
+    if (downloadsLeft <= 0) {
+      alert("Daily download limit reached (5/day)");
+      return;
+    }
+    setDownloadsLeft(downloadsLeft - 1);
+    alert(`Mockup downloaded! ${downloadsLeft - 1} downloads left today.`);
+  };
 
   return (
-    <section className="py-6 bg-gray-50 mt-10">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            How{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
-              MockupPro
-            </span>{" "}
-            Works
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Create stunning mockups in just 3 simple steps
-          </p>
-        </div>
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="grid md:grid-cols-2 gap-0">
+          {/* Control Panel - Left Side */}
+          <div className="p-6 border-r border-gray-200">
+            <h1 className="text-2xl font-bold mb-6 text-gray-800">
+              Premium Mockup Generator
+            </h1>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Upload Zone */}
-          <div className="relative h-[500px]">
-            <div className="absolute inset-0 bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-dashed border-gray-200 hover:border-purple-300 transition-all flex flex-col items-center justify-center p-8 text-center">
-              {!uploadedImage ? (
-                <>
-                  <div className="w-20 h-20 mb-6 bg-purple-100 rounded-full flex items-center justify-center">
-                    <i className="fas fa-cloud-upload-alt text-purple-600 text-3xl"></i>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    Upload Your Design
-                  </h3>
-                  <p className="text-gray-600 mb-6">
-                    Drag & drop your image or click to browse
-                  </p>
-                  <label
-                    htmlFor="upload-input"
-                    className="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium cursor-pointer transition"
-                  >
-                    Select File
-                  </label>
-                  <input
-                    id="upload-input"
-                    type="file"
-                    accept=".png, .jpg, .jpeg, .svg"
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                  <p className="text-sm text-gray-500 mt-4">
-                    PNG, JPG, or SVG • Max 20MB
-                  </p>
-                </>
-              ) : (
-                <div className="flex flex-col h-full w-full">
-                  <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-                    <h4 className="font-medium text-gray-900">
-                      Your Design Preview
-                    </h4>
-                    <button
-                      className="text-gray-500 hover:text-gray-700"
-                      onClick={resetUpload}
-                      aria-label="Change uploaded image"
-                    >
-                      <i className="fas fa-redo mr-1"></i> Change
-                    </button>
-                  </div>
-                  <div className="flex-1 flex items-center justify-center p-8 bg-gray-50">
+            {/* Upload Section */}
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold mb-3 text-gray-700">
+                1. Upload Design
+              </h2>
+              <div
+                className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                  isDragging
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-300 hover:border-purple-400"
+                } ${uploadedImage ? "hidden" : "block"}`}
+                onClick={() => fileInputRef.current.click()}
+                onDragEnter={handleDrag.enter}
+                onDragLeave={handleDrag.leave}
+                onDragOver={handleDrag.over}
+                onDrop={handleDrag.drop}
+              >
+                <FaUpload className="mx-auto text-3xl text-purple-500 mb-3" />
+                <p className="text-gray-600 mb-1">
+                  {isDragging
+                    ? "Drop your file here"
+                    : "Drag & drop or click to browse"}
+                </p>
+                <p className="text-sm text-gray-500">
+                  PNG, JPG, SVG (Max 20MB)
+                </p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </div>
+
+              {uploadedImage && (
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center">
                     <img
                       src={uploadedImage}
-                      alt="Uploaded design"
-                      className="max-h-full max-w-full object-contain rounded-lg"
+                      alt="Preview"
+                      className="w-10 h-10 object-cover rounded mr-3"
                     />
+                    <span className="text-sm font-medium text-gray-700 truncate max-w-[160px]">
+                      {fileInputRef.current?.files[0]?.name || "uploaded-image"}
+                    </span>
                   </div>
+                  <button
+                    onClick={() => fileInputRef.current.click()}
+                    className="text-sm text-blue-600 cursor-pointer hover:text-blue-800 flex items-center"
+                  >
+                    <FaExchangeAlt className="mr-1" /> Change
+                  </button>
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Mockup Showcase */}
-          <div>
-            <div className="mb-10">
-              <div className="flex items-center mb-6">
-                <div className="w-14 h-14 mr-5 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <i className="fas fa-mobile-alt text-white text-2xl"></i>
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900">
-                  Real-Time Mockup Preview
-                </h3>
-              </div>
-              <p className="text-lg text-gray-600 mb-8">
-                See your design perfectly applied to professional mockups with
-                automatic fitting and perspective correction.
-              </p>
-
-              {/* Mockup Selector */}
-              <div className="grid grid-cols-4 gap-3 mb-8">
-                {[
-                  { key: "iphone", icon: "fas fa-mobile-alt", label: "iPhone" },
-                  { key: "macbook", icon: "fas fa-laptop", label: "MacBook" },
-                  { key: "tshirt", icon: "fas fa-tshirt", label: "T-Shirt" },
-                  { key: "mug", icon: "fas fa-mug-hot", label: "Coffee Mug" },
-                ].map(({ key, icon, label }) => (
+            {/* Mockup Type Selection */}
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold mb-3 text-gray-700">
+                2. Mockup Type
+              </h2>
+              <div className="grid grid-cols-5 gap-2">
+                {mockupTypes.map(({ key, icon, label }) => (
                   <button
                     key={key}
                     onClick={() => setActiveMockup(key)}
-                    className={`px-4 py-3 rounded-lg flex flex-col items-center transition ${
+                    className={`p-2 rounded-lg flex flex-col cursor-pointer items-center transition-all cursor-pointer ${
                       activeMockup === key
-                        ? "bg-gray-900 text-white"
-                        : "bg-gray-100 hover:bg-gray-200"
+                        ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md"
+                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
                     }`}
                   >
-                    <i className={`${icon} mb-1`}></i>
+                    <span className="text-lg">{icon}</span>
                     <span className="text-xs mt-1">{label}</span>
                   </button>
                 ))}
               </div>
+            </div>
 
-              {/* Mockup Frame Container */}
-              <div className="relative bg-gray-50 rounded-2xl p-8 shadow-sm w-full max-w-md mx-auto">
-                {/* iPhone Mockup */}
-                <div
-                  className={`${
-                    activeMockup === "iphone" ? "block" : "hidden"
-                  }`}
-                >
-                  <div className="relative mx-auto w-[180px] h-[370px] bg-gray-900 rounded-[40px] p-2 shadow-lg">
-                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-gray-900 rounded-b-lg z-10"></div>
-                    <div className="relative w-full h-full overflow-hidden rounded-[36px] bg-white">
-                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                        {uploadedImage ? (
-                          <img
-                            src={uploadedImage}
-                            alt="Design on iPhone"
-                            className="max-h-full max-w-full object-contain"
-                          />
-                        ) : (
-                          <p className="text-gray-400 text-center px-4">
-                            Your design will appear here
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* MacBook Mockup */}
-                <div
-                  className={`${
-                    activeMockup === "macbook" ? "block" : "hidden"
-                  }`}
-                >
-                  <div className="relative mx-auto w-[300px] h-[180px] bg-gray-800 rounded-t-lg p-1 shadow-lg">
-                    <div className="relative w-full h-full overflow-hidden rounded-t bg-white flex items-center justify-center">
-                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                        {uploadedImage ? (
-                          <img
-                            src={uploadedImage}
-                            alt="Design on MacBook"
-                            className="max-h-full max-w-full object-contain"
-                          />
-                        ) : (
-                          <p className="text-gray-400 text-center px-4">
-                            Your design will appear here
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="absolute -bottom-[15px] left-0 right-0 h-[15px] bg-gray-800 rounded-b-lg"></div>
-                    <div className="absolute -bottom-[25px] left-1/2 transform -translate-x-1/2 w-3/4 h-[10px] bg-gray-700 rounded-b-lg"></div>
-                  </div>
-                </div>
-
-                {/* T-Shirt Mockup */}
-                <div
-                  className={`${
-                    activeMockup === "tshirt" ? "block" : "hidden"
-                  } relative mx-auto w-[220px]`}
-                >
-                  <img
-                    src="https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="T-shirt template"
-                    className="w-full h-auto object-cover rounded-lg shadow"
+            {/* Customization Controls */}
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold mb-3 text-gray-700">
+                3. Customize
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Size: {designSize}%
+                  </label>
+                  <input
+                    type="range"
+                    min="50"
+                    max="150"
+                    value={designSize}
+                    onChange={(e) => setDesignSize(e.target.value)}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    {uploadedImage ? (
-                      <img
-                        src={uploadedImage}
-                        alt="Design on T-shirt"
-                        className="max-h-[60%] max-w-[60%] object-contain"
-                      />
-                    ) : (
-                      <p className="text-gray-400 text-center px-4 bg-white bg-opacity-80 py-2 rounded">
-                        Your design here
-                      </p>
-                    )}
-                  </div>
                 </div>
-
-                {/* Coffee Mug Mockup */}
-                <div
-                  className={`${
-                    activeMockup === "mug" ? "block" : "hidden"
-                  } relative mx-auto w-[180px] h-[180px]`}
-                >
-                  <img
-                    src="https://images.unsplash.com/photo-1546054454-aa26e2b734c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Coffee mug template"
-                    className="absolute inset-0 w-full h-full object-cover rounded-full shadow-lg"
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Rotation: {rotation}°
+                  </label>
+                  <input
+                    type="range"
+                    min="-45"
+                    max="45"
+                    value={rotation}
+                    onChange={(e) => setRotation(e.target.value)}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    {uploadedImage ? (
-                      <img
-                        src={uploadedImage}
-                        alt="Design on Coffee Mug"
-                        className="max-h-[50%] max-w-[50%] object-contain"
-                      />
-                    ) : (
-                      <p className="text-gray-400 text-center px-4 bg-white bg-opacity-80 py-2 rounded">
-                        Your design here
-                      </p>
-                    )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Opacity: {opacity}%
+                  </label>
+                  <input
+                    type="range"
+                    min="50"
+                    max="100"
+                    value={opacity}
+                    onChange={(e) => setOpacity(e.target.value)}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Background
+                  </label>
+                  <div className="flex space-x-2">
+                    {bgOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => {
+                          if (option.value === "custom") {
+                            setShowColorPicker(!showColorPicker);
+                          } else {
+                            setBackground(option.value);
+                            setShowColorPicker(false);
+                          }
+                        }}
+                        className={`w-8 h-8 rounded-full cursor-pointer border-2 flex items-center justify-center ${
+                          background === option.value ||
+                          (option.value === "custom" &&
+                            background.startsWith("#"))
+                            ? "border-purple-500 ring-1 ring-purple-200"
+                            : "border-gray-300"
+                        } ${option.color || "bg-white"}`}
+                        style={
+                          option.value === "custom" &&
+                          background.startsWith("#")
+                            ? { backgroundColor: background }
+                            : {}
+                        }
+                      >
+                        {option.icon || ""}
+                      </button>
+                    ))}
                   </div>
+                  {showColorPicker && (
+                    <div className="mt-2">
+                      <input
+                        type="color"
+                        value={customBgColor}
+                        onChange={(e) => {
+                          setCustomBgColor(e.target.value);
+                          setBackground(e.target.value);
+                        }}
+                        className="cursor-pointer"
+                      />
+                      <span className="ml-2 text-sm text-gray-600">
+                        {customBgColor}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
+
+            {/* Action Buttons */}
+            <div className="flex space-x-3">
+              <button
+                onClick={aiEnhance}
+                disabled={!uploadedImage || isProcessing}
+                className={`flex-1 py-2 cursor-pointer rounded-lg font-medium flex items-center justify-center ${
+                  !uploadedImage
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : isProcessing
+                    ? "bg-blue-200 text-blue-800"
+                    : "bg-blue-100 hover:bg-blue-200 text-blue-700"
+                }`}
+              >
+                {isProcessing ? (
+                  <>
+                    <FaSpinner className="animate-spin mr-2" /> Enhancing...
+                  </>
+                ) : (
+                  <>
+                    <FaMagic className="mr-2" /> AI Enhance
+                  </>
+                )}
+              </button>
+              <button
+                onClick={resetDesign}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 cursor-pointer text-gray-700 rounded-lg font-medium flex items-center justify-center"
+              >
+                <FaUndo className="mr-2" /> Reset
+              </button>
+            </div>
+          </div>
+
+          {/* Preview Panel - Right Side */}
+          <div className="p-6 bg-gray-50">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-gray-700">
+                Live Preview
+              </h2>
+              <div className="flex items-center">
+                <span className="text-sm bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                  Downloads left: {downloadsLeft}/5
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center h-[400px] md:h-[500px] relative">
+              <div
+                className={`w-full h-full flex items-center justify-center rounded-xl transition-colors ${
+                  background === "white"
+                    ? "bg-white"
+                    : background === "gray"
+                    ? "bg-gray-100"
+                    : background === "gradient"
+                    ? "bg-gradient-to-r from-blue-50 to-purple-50"
+                    : "bg-transparent"
+                }`}
+                style={
+                  background.startsWith("#")
+                    ? { backgroundColor: background }
+                    : {}
+                }
+              >
+                {/* iPhone Mockup */}
+                {activeMockup === "iphone" && (
+                  <div className="relative w-[150px] h-[300px] bg-gray-900 rounded-[30px] p-1.5 shadow-xl">
+                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/4 h-4 bg-gray-900 rounded-b-md"></div>
+                    <div className="relative w-full h-full overflow-hidden rounded-[26px] bg-white">
+                      {uploadedImage ? (
+                        <img
+                          src={uploadedImage}
+                          alt="Design preview"
+                          className="absolute inset-0 object-contain"
+                          style={{
+                            width: `${designSize}%`,
+                            transform: `rotate(${rotation}deg)`,
+                            opacity: `${opacity}%`,
+                            left: "50%",
+                            top: "50%",
+                            transformOrigin: "center",
+                            transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
+                          }}
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                          Design Preview
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* MacBook Mockup */}
+                {activeMockup === "macbook" && (
+                  <div className="relative w-[250px] h-[150px] bg-gray-800 rounded-t-lg p-1 shadow-xl">
+                    <div className="relative w-full h-full overflow-hidden rounded-t bg-white">
+                      {uploadedImage ? (
+                        <img
+                          src={uploadedImage}
+                          alt="Design preview"
+                          className="absolute inset-0 object-contain"
+                          style={{
+                            width: `${designSize}%`,
+                            transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
+                            opacity: `${opacity}%`,
+                            left: "50%",
+                            top: "50%",
+                          }}
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                          Screen Design
+                        </div>
+                      )}
+                    </div>
+                    <div className="absolute -bottom-[12px] left-0 right-0 h-[12px] bg-gray-800 rounded-b-lg"></div>
+                  </div>
+                )}
+
+                {/* T-Shirt Mockup */}
+                {activeMockup === "tshirt" && (
+                  <div className="relative w-[180px]">
+                    <img
+                      src="https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+                      alt="T-shirt template"
+                      className="w-full h-auto rounded shadow"
+                    />
+                    {uploadedImage ? (
+                      <img
+                        src={uploadedImage}
+                        alt="Design preview"
+                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain"
+                        style={{
+                          width: `${designSize}%`,
+                          transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
+                          opacity: `${opacity}%`,
+                        }}
+                      />
+                    ) : (
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/80 px-3 py-1 rounded text-sm text-gray-500">
+                        Your Design
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Mug Mockup */}
+                {activeMockup === "mug" && (
+                  <div className="relative w-[140px] h-[140px]">
+                    <img
+                      src="https://images.unsplash.com/photo-1546054454-aa26e2b734c7?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+                      alt="Mug template"
+                      className="w-full h-full object-cover rounded-full shadow"
+                    />
+                    {uploadedImage ? (
+                      <img
+                        src={uploadedImage}
+                        alt="Design preview"
+                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain"
+                        style={{
+                          width: `${designSize}%`,
+                          transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
+                          opacity: `${opacity}%`,
+                        }}
+                      />
+                    ) : (
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/80 px-3 py-1 rounded text-sm text-gray-500">
+                        Your Logo
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Packaging Mockup */}
+                {activeMockup === "packaging" && (
+                  <div className="relative w-[160px] h-[200px]">
+                    <div className="absolute inset-0 bg-gray-100 rounded shadow-lg flex items-center justify-center">
+                      <div className="w-[90%] h-[90%] bg-white border border-gray-200 flex items-center justify-center">
+                        {uploadedImage ? (
+                          <img
+                            src={uploadedImage}
+                            alt="Design preview"
+                            className="object-contain"
+                            style={{
+                              width: `${designSize}%`,
+                              transform: `rotate(${rotation}deg)`,
+                              opacity: `${opacity}%`,
+                            }}
+                          />
+                        ) : (
+                          <div className="text-gray-400 text-sm">
+                            Product Label
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <button
+              onClick={downloadMockup}
+              disabled={downloadsLeft <= 0}
+              className={`w-full mt-4 py-3 rounded-lg font-medium cursor-pointer flex items-center justify-center ${
+                downloadsLeft <= 0
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:opacity-90"
+              }`}
+            >
+              <FaDownload className="mr-2" />
+              {downloadsLeft > 0 ? "Download Mockup" : "Daily Limit Reached"}
+            </button>
           </div>
         </div>
-
-        {/* Quick Features */}
-        <div className="grid md:grid-cols-3 gap-8 mt-12 px-4">
-          {/* Feature Card Template */}
-          {[
-            {
-              icon: "fas fa-robot",
-              title: "Precision AI Fitting",
-              description:
-                "Our neural networks analyze depth and perspective to perfectly adapt your designs to any surface with pixel-perfect accuracy.",
-              colorFrom: "from-purple-600",
-              colorTo: "to-fuchsia-500",
-              badge: "Pro Feature",
-              badgeColor: "text-purple-600",
-            },
-            {
-              icon: "fas fa-lightbulb",
-              title: "Dynamic Lighting",
-              description:
-                "Real-time ray tracing creates photorealistic shadows and reflections tailored to your scene's lighting conditions.",
-              colorFrom: "from-blue-600",
-              colorTo: "to-cyan-500",
-              badge: "Pro Feature",
-              badgeColor: "text-blue-600",
-            },
-            {
-              icon: "fas fa-bolt",
-              title: "8K Ultra HD",
-              description:
-                "Export cinema-quality mockups with 32-bit depth for professional print and digital media production.",
-              colorFrom: "from-green-600",
-              colorTo: "to-emerald-500",
-              badge: "Enterprise Feature",
-              badgeColor: "text-green-600",
-            },
-          ].map(
-            ({
-              icon,
-              title,
-              description,
-              colorFrom,
-              colorTo,
-              badge,
-              badgeColor,
-            }) => (
-              <div
-                key={title}
-                className="relative p-10 bg-white rounded-3xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 border border-gray-100 overflow-hidden group isolate"
-              >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${colorFrom} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-                ></div>
-                <div
-                  className={`absolute -right-10 -top-10 w-40 h-40 rounded-full ${colorFrom.replace(
-                    "from-",
-                    ""
-                  )}/10 blur-xl`}
-                ></div>
-                <div
-                  className={`absolute -left-4 -bottom-4 w-24 h-24 rounded-full ${colorTo.replace(
-                    "to-",
-                    ""
-                  )}/10 blur-lg`}
-                ></div>
-
-                <div className="relative z-10">
-                  <div
-                    className={`w-16 h-16 mb-8 bg-gradient-to-br ${colorFrom} ${colorTo} rounded-xl flex items-center justify-center shadow-lg shadow-${colorFrom.replace(
-                      "from-",
-                      ""
-                    )}-200/50 group-hover:shadow-${colorFrom.replace(
-                      "from-",
-                      ""
-                    )}-300/70 transition-all duration-500 group-hover:-translate-y-1`}
-                  >
-                    <i className={`${icon} text-white text-2xl`}></i>
-                  </div>
-
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900 tracking-tight">
-                    {title}
-                  </h3>
-                  <p className="text-gray-600/90 leading-relaxed font-light">
-                    {description}
-                  </p>
-
-                  <div className="mt-8 pt-5 border-t border-gray-100/50 flex justify-between items-center">
-                    <span
-                      className={`text-xs font-medium tracking-wide uppercase ${badgeColor}/90`}
-                    >
-                      {badge}
-                    </span>
-                    <button
-                      className={`flex items-center text-sm font-medium text-gray-900/80 hover:${badgeColor} transition-colors`}
-                    >
-                      Explore
-                      <svg
-                        className={`ml-2 w-4 h-4`}
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )
-          )}
-        </div>
       </div>
-    </section>
+    </div>
   );
 }

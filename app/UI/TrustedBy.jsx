@@ -3,8 +3,10 @@ export default function TrustedBy() {
     <section className="py-8 bg-gray-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-wrap justify-center gap-8 md:gap-16 items-center">
-          <p className="text-gray-500 font-medium">
-            Trusted by 50,000+ creators at:
+          <p className="text-gray-400 font-medium">
+            Trusted by{" "}
+            <span className="text-purple-400 font-medium">50,000+</span>{" "}
+            creators at:
           </p>
           <div className="flex flex-wrap justify-center gap-8 md:gap-16 items-center">
             {[

@@ -9,6 +9,41 @@ import {
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white pt-20 pb-12 px-6 sm:px-8 lg:px-10">
+      {/* Trusted By Section */}
+      {/* <div className="max-w-7xl mx-auto mb-20">
+        <div className="py-8 bg-gray-800/50 rounded-xl border border-gray-700">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-8 items-center">
+            <p className="text-gray-400 font-medium text-sm uppercase tracking-wider flex items-center">
+              <svg
+                className="w-4 h-4 mr-2 text-purple-500"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Trusted by 50,000+ creators worldwide
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 md:gap-8 items-center">
+              {["Shopify", "Etsy", "Amazon", "Adobe", "Figma", "Notion"].map(
+                (company) => (
+                  <span
+                    key={company}
+                    className="text-gray-300 hover:text-white transition-colors duration-300 text-sm font-medium"
+                  >
+                    {company}
+                  </span>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+      </div> */}
+
+      {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
           {/* Brand & Social */}
