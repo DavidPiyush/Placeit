@@ -336,7 +336,7 @@ export default function Navigation() {
             {/* Auth Buttons */}
             <div className="flex items-center space-x-3 ml-2">
               <Link
-                href="#"
+                href="login"
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                   clickedItem === "login"
                     ? "bg-gray-100"
@@ -347,7 +347,7 @@ export default function Navigation() {
                 Log In
               </Link>
               <Link
-                href="#"
+                href="signup"
                 className={`relative px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${
                   clickedItem === "signup" ? "transform scale-95" : ""
                 }`}
@@ -451,14 +451,14 @@ export default function Navigation() {
           {/* Mobile Auth Buttons */}
           <div className="pt-2 space-y-3">
             <Link
-              href="#"
+              href="login"
               className="block px-4 py-3 text-center text-gray-700 bg-white border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200"
               onClick={() => handleLinkClick("login")}
             >
               Log In
             </Link>
             <Link
-              href="#"
+              href="signup"
               className="block px-4 py-3 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
               onClick={() => handleLinkClick("signup")}
             >
